@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Profile extends Model
 {
-
-    // protected $with = ['user'];
     use HasFactory;
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -20,14 +18,14 @@ class Profile extends Model
     protected $fillable = [
         'user_id',
         'birth_date',
-        'avatar_url',
+        'avatar_path',
         'state',
         'bio',
     ];
 
+    /** @return BelongsTo<User, Profile> */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);        
+        return $this->belongsTo(User::class);
     }
-
 }

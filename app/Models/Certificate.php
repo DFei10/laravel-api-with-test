@@ -13,7 +13,6 @@ class Certificate extends Model
         'user_id',
         'title',
         'university',
-        'graduation_date'
+        'graduation_date',
     ];
-
 }

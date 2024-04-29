@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id')->constrained();
-            $table->string('title')->unique();
-            $table->text('description')->unique();
+            $table->string('title');
+            $table->text('description');
             $table->unsignedTinyInteger('type')->default(0);
-            $table->string('location');
+            $table->string('location')->nullable();
             $table->integer('price');
             $table->unsignedTinyInteger('status')->default(0);
-            $table->smallInteger('student_count');
-            
+            $table->unsignedSmallInteger('student_count');
+
             $table->timestamps();
         });
     }

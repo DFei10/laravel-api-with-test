@@ -26,10 +26,6 @@ class User extends Authenticatable
         'category',
     ];
 
-    // protected $with = [
-    //     'profile','certificate','announcement','enroll','like','comment','reply'
-    // ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -50,41 +46,21 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /** @return HasOne<Profile> */
     public function profile(): HasOne
     {
-        return $this->hasOne(Profile::class);        
+        return $this->hasOne(Profile::class);
     }
 
-    public function certificate(): HasMany
+    /** @return HasMany<Certificate> */
+    public function certificates(): HasMany
     {
-        return $this->hasMany(Certificate::class);        
+        return $this->hasMany(Certificate::class);
     }
-    public function announcement(): HasMany
+
+    /** @return HasMany<Announcement> */
+    public function announcements(): HasMany
     {
-        return $this->hasMany(Announcement::class);        
+        return $this->hasMany(Announcement::class);
     }
-
-    public function enroll(): HasMany
-    {
-        return $this->hasMany(Enroll::class);        
-    }
-
-    public function like(): HasMany
-    {
-        return $this->hasMany(Like::class);        
-    }
-
-    public function comment(): HasMany
-    {
-        return $this->hasMany(Comment::class);        
-    }
-
-    public function reply(): HasMany
-    {
-        return $this->hasMany(reply::class);        
-    }
-
-
-
-
 }

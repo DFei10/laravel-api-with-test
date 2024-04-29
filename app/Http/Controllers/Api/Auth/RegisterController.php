@@ -19,17 +19,17 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
- 
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
- 
+
         event(new Registered($user));
- 
+
         $device = substr($request->userAgent() ?? '', 0, 255);
- 
+
         return response()->json([
             'access_token' => $user->createToken($device)->plainTextToken,
         ], Response::HTTP_CREATED);

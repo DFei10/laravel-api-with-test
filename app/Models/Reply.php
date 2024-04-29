@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class reply extends Model
+class Reply extends Model
 {
     use HasFactory;
 
@@ -13,6 +13,6 @@ class reply extends Model
         'user_id',
         'announcement_id',
         'comment_id',
-        'reply'
+        'reply',
     ];
 }

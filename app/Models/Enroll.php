@@ -11,7 +11,6 @@ class Enroll extends Model
 
     protected $fillable = [
         'user_id',
-        'announcement_id'
+        'announcement_id',
     ];
-    
 }

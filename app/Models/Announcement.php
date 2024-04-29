@@ -2,22 +2,29 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Mockery\Matcher\HasKey;
 
 class Announcement extends Model
 {
     use HasFactory;
+
+    public const TYPE_OFFLINE = 0;
+
+    public const TYPE_ONLINE = 1;
+
+    public const STATUS_CLOSED = 0;
+
+    public const STATUS_OPENED = 1;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-
     protected $fillable = [
         'user_id',
         'title',
@@ -28,39 +35,84 @@ class Announcement extends Model
         'status',
         'student_count',
     ];
-    public function enroll(): HasMany
+
+    /** @return Attribute<string, int> */
+    protected function type(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value === self::TYPE_ONLINE) {
+                    return 'online';
+                }
+                if ($value === self::TYPE_OFFLINE) {
+                    return 'offline';
+                }
+            },
+            set: function ($value) {
+                if ($value === 'online') {
+                    return self::TYPE_ONLINE;
+                }
+                if ($value === 'offline') {
+                    return self::TYPE_OFFLINE;
+                }
+            }
+        );
+    }
+
+    /** @return Attribute<string, int> */
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($value === self::STATUS_CLOSED) {
+                    return 'closed';
+                }
+                if ($value === self::STATUS_OPENED) {
+                    return 'opened';
+                }
+            },
+            set: function ($value) {
+                if ($value === 'closed') {
+                    return self::STATUS_CLOSED;
+                }
+                if ($value === 'opened') {
+                    return self::STATUS_OPENED;
+                }
+            }
+        );
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->status == 'closed';
+    }
+
+    public function hasAvailableEnrollment(): bool
+    {
+        return $this->enrolls()->count() < $this->student_count;
+    }
+
+    /** @return BelongsTo<User, Announcement> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /** @return HasMany<Enroll> */
+    public function enrolls(): HasMany
     {
         return $this->hasMany(Enroll::class);
     }
 
-    public function like(): HasMany
+    /** @return HasMany<Like> */
+    public function likes(): HasMany
     {
-        return $this->hasMany(Like::class);        
-    }
-    public function comment(): HasMany
-    {
-        return $this->hasMany(Comment::class);        
+        return $this->hasMany(Like::class);
     }
 
-    public function reply(): HasMany
+    /** @return HasMany<Comment> */
+    public function comments(): HasMany
     {
-        return $this->hasMany(reply::class);        
+        return $this->hasMany(Comment::class);
     }
-    public function scopeFilter($query, array $filters) {
-        $query->when(
-            $filters['search'] ?? false,
-            fn ($query, $search) => $query->where(fn ($query) => $query->where('title', 'like', '%' . $search . '%')
-                ->OrWhere('description', 'like', '%' . $search . '%'))
-        );
-
-        $query->when(
-            isset($filters['type']), // Check if 'type' filter is present
-            function ($query) use ($filters) {
-                $type = $filters['type']; // Get the value of 'type'
-                $query->where('type', $type);
-            }
-        );
-    
-    }
-
 }

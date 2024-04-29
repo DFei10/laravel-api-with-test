@@ -20,6 +20,7 @@ class Teacher
         if ($user && $user->category == 0) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
+
         return $next($request);
     }
 }

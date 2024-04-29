@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('university');
             $table->date('graduation_date');
-        
+
             $table->timestamps();
 
         });
